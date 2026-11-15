@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Email Spam Checker</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; }
+    body { margin: 0; background: #f1f5f9; color: #172033; }
+    main { max-width: 720px; margin: 48px auto; padding: 28px; background: white; border-radius: 16px; box-shadow: 0 8px 28px #18243a18; }
+    h1 { margin-top: 0; }
+    p { line-height: 1.55; color: #526078; }
+    textarea { box-sizing: border-box; width: 100%; min-height: 220px; padding: 14px; border: 1px solid #bac5d5; border-radius: 9px; font: inherit; }
+    button { margin-top: 12px; padding: 11px 18px; border: 0; border-radius: 8px; background: #175cd3; color: white; font: inherit; font-weight: 650; cursor: pointer; }
+    .result, .error, .stats { margin-top: 20px; padding: 14px; border-radius: 9px; }
+    .result { background: #eef4ff; color: #193b73; font-size: 1.1rem; font-weight: 700; }
+    .error { background: #fff0ed; color: #9b2c1f; }
+    .stats { background: #f3f6fa; font-size: .95rem; }
+    small { color: #657187; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Email Spam Checker</h1>
+    <p>Paste an email message below. The classifier was trained on public, labeled email examples.</p>
+    <form method="post">
+      <label for="message"><strong>Email message</strong></label>
+      <textarea id="message" name="message" maxlength="100000" placeholder="Paste the subject and message text here...">{{ message }}</textarea>
+      <button type="submit">Check message</button>
+    </form>
+    {% if error %}<div class="error" role="alert">{{ error }}</div>{% endif %}
+    {% if result %}<div class="result" role="status">Prediction: {{ result }}</div>{% endif %}
+    <div class="stats">Trained on {{ "{:,.0f}".format(stats.total) }} public emails. Held-out test accuracy: {{ "{:.1%}".format(stats.accuracy) }}.</div>
+    <p><small>This is an educational classifier. It may misclassify messages. It only checks text you paste here; it does not connect to or read your email account.</small></p>
+  </main>
+</body>
+</html>
