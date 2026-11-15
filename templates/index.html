@@ -3,35 +3,160 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f7ff">
   <title>Email Spam Checker</title>
   <style>
-    :root { color-scheme: light; font-family: system-ui, sans-serif; }
-    body { margin: 0; background: #f1f5f9; color: #172033; }
-    main { max-width: 720px; margin: 48px auto; padding: 28px; background: white; border-radius: 16px; box-shadow: 0 8px 28px #18243a18; }
-    h1 { margin-top: 0; }
-    p { line-height: 1.55; color: #526078; }
-    textarea { box-sizing: border-box; width: 100%; min-height: 220px; padding: 14px; border: 1px solid #bac5d5; border-radius: 9px; font: inherit; }
-    button { margin-top: 12px; padding: 11px 18px; border: 0; border-radius: 8px; background: #175cd3; color: white; font: inherit; font-weight: 650; cursor: pointer; }
-    .result, .error, .stats { margin-top: 20px; padding: 14px; border-radius: 9px; }
-    .result { background: #eef4ff; color: #193b73; font-size: 1.1rem; font-weight: 700; }
-    .error { background: #fff0ed; color: #9b2c1f; }
-    .stats { background: #f3f6fa; font-size: .95rem; }
-    small { color: #657187; }
+    :root {
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #17223b;
+      background: #f4f7ff;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      --blue: #3157d5;
+      --muted: #66718a;
+      --line: #e1e7f2;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 48px 20px;
+      background:
+        radial-gradient(ellipse at 12% 0%, #e5edff 0, transparent 38%),
+        radial-gradient(ellipse at 100% 35%, #e8f5ff 0, transparent 32%),
+        #f7f8fc;
+    }
+    main {
+      width: min(100%, 760px);
+      margin: 0 auto;
+      padding: clamp(25px, 5vw, 48px);
+      border: 1px solid #ffffff;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, .94);
+      box-shadow: 0 24px 70px #25345b16, 0 3px 12px #25345b08;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 27px;
+      color: #42516f;
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+    .brand-mark {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: 11px;
+      background: #edf1ff;
+      color: var(--blue);
+      font-size: 18px;
+    }
+    h1 {
+      margin: 0;
+      color: #18233f;
+      font-size: clamp(2rem, 5vw, 2.65rem);
+      letter-spacing: -.045em;
+      line-height: 1.12;
+    }
+    .intro {
+      max-width: 570px;
+      margin: 15px 0 30px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+    .field-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    label { color: #273451; font-size: .96rem; font-weight: 700; }
+    .field-hint { color: #8791a5; font-size: .82rem; }
+    textarea {
+      display: block;
+      width: 100%;
+      min-height: 240px;
+      resize: vertical;
+      padding: 17px 18px;
+      border: 1px solid #d7deeb;
+      border-radius: 14px;
+      outline: none;
+      background: #fcfdff;
+      color: #26334e;
+      font: inherit;
+      line-height: 1.6;
+      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+    textarea::placeholder { color: #a0a9b9; }
+    textarea:focus { border-color: #7188ed; background: #fff; box-shadow: 0 0 0 4px #3157d51a; }
+    button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 16px;
+      padding: 13px 19px;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #4168e7, #3152c8);
+      box-shadow: 0 7px 16px #3157d52e;
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    button:hover { transform: translateY(-1px); box-shadow: 0 10px 20px #3157d53b; }
+    button:focus-visible { outline: 3px solid #91a4ff; outline-offset: 3px; }
+    .result, .error, .stats { margin-top: 22px; padding: 17px 18px; border-radius: 14px; }
+    .result { border: 1px solid #d9e3ff; background: #f0f4ff; color: #2447a8; font-size: 1.05rem; font-weight: 750; }
+    .error { border: 1px solid #f5d3ca; background: #fff5f2; color: #9b3527; }
+    .stats { display: flex; align-items: center; gap: 12px; border: 1px solid #e7ebf3; background: #f8f9fc; color: #4e5a73; font-size: .92rem; line-height: 1.55; }
+    .stats-mark { display: grid; width: 34px; height: 34px; flex: 0 0 34px; place-items: center; border-radius: 10px; background: #eaf5ef; color: #258456; font-weight: 800; }
+    .privacy { display: flex; gap: 10px; margin: 23px 0 0; color: #78839a; font-size: .85rem; line-height: 1.6; }
+    .privacy-icon { flex: 0 0 auto; color: #5972c8; }
+    @media (max-width: 560px) {
+      body { padding: 20px 12px; }
+      main { padding: 25px 19px; border-radius: 19px; }
+      .intro { font-size: .98rem; }
+      .field-hint { max-width: 130px; text-align: right; }
+      button { width: 100%; justify-content: center; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
   </style>
 </head>
 <body>
   <main>
+    <div class="brand"><span class="brand-mark" aria-hidden="true">✉</span> Mail safety tool</div>
     <h1>Email Spam Checker</h1>
-    <p>Paste an email message below. The classifier was trained on public, labeled email examples.</p>
+    <p class="intro">Check a message for common spam signals. Paste the subject and email text below to get a quick prediction.</p>
+
     <form method="post">
-      <label for="message"><strong>Email message</strong></label>
+      <div class="field-heading">
+        <label for="message">Email message</label>
+        <span class="field-hint">Subject and body text</span>
+      </div>
       <textarea id="message" name="message" maxlength="100000" placeholder="Paste the subject and message text here...">{{ message }}</textarea>
-      <button type="submit">Check message</button>
+      <button type="submit">Check message <span aria-hidden="true">→</span></button>
     </form>
+
     {% if error %}<div class="error" role="alert">{{ error }}</div>{% endif %}
     {% if result %}<div class="result" role="status">Prediction: {{ result }}</div>{% endif %}
-    <div class="stats">Trained on {{ "{:,.0f}".format(stats.total) }} public emails. Held-out test accuracy: {{ "{:.1%}".format(stats.accuracy) }}.</div>
-    <p><small>This is an educational classifier. It may misclassify messages. It only checks text you paste here; it does not connect to or read your email account.</small></p>
+
+    <div class="stats">
+      <span class="stats-mark" aria-hidden="true">✓</span>
+      <span>Trained on <strong>{{ "{:,.0f}".format(stats.total) }}</strong> public emails · Held-out test accuracy: <strong>{{ "{:.1%}".format(stats.accuracy) }}</strong></span>
+    </div>
+    <p class="privacy"><span class="privacy-icon" aria-hidden="true">●</span><span>This is an educational classifier and may misclassify messages. It checks only text you paste here; it does not connect to or read your email account.</span></p>
   </main>
 </body>
 </html>
