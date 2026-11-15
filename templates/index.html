@@ -143,10 +143,10 @@
     <form method="post">
       <div class="field-heading">
         <label for="message">Email message</label>
-        <span class="field-hint">Subject and body text</span>
+        <span class="field-hint" id="message-count" aria-live="polite">0 / 100,000 characters</span>
       </div>
       <textarea id="message" name="message" maxlength="100000" placeholder="Paste the subject and message text here...">{{ message }}</textarea>
-      <button type="submit">Check message <span aria-hidden="true">→</span></button>
+      <button type="submit"><span data-submit-label>Check message</span> <span data-submit-arrow aria-hidden="true">→</span></button>
     </form>
 
     {% if error %}<div class="error" role="alert">{{ error }}</div>{% endif %}
@@ -158,5 +158,27 @@
     </div>
     <p class="privacy"><span class="privacy-icon" aria-hidden="true">●</span><span>This is an educational classifier and may misclassify messages. It checks only text you paste here; it does not connect to or read your email account.</span></p>
   </main>
+  <script>
+    const messageForm = document.querySelector("form");
+    const messageBox = document.querySelector("#message");
+    const messageCount = document.querySelector("#message-count");
+    const submitButton = messageForm.querySelector("button[type='submit']");
+    const submitLabel = submitButton.querySelector("[data-submit-label]");
+    const submitArrow = submitButton.querySelector("[data-submit-arrow]");
+
+    function updateMessageCount() {
+      const count = messageBox.value.length;
+      messageCount.textContent = `${count.toLocaleString()} / 100,000 characters`;
+    }
+
+    messageBox.addEventListener("input", updateMessageCount);
+    updateMessageCount();
+
+    messageForm.addEventListener("submit", () => {
+      submitButton.disabled = true;
+      submitLabel.textContent = "Checking message…";
+      submitArrow.hidden = true;
+    });
+  </script>
 </body>
 </html>
