@@ -124,16 +124,37 @@
     .result, .error, .stats { margin-top: 22px; padding: 17px 18px; border-radius: 14px; }
     .result {
       position: relative;
-      border: 1px solid #d9e3ff;
-      background: #f0f4ff;
-      color: #2447a8;
       font-size: 1.05rem;
       font-weight: 750;
       animation: result-bubble-pop 650ms cubic-bezier(.2, .8, .25, 1.15) both;
     }
+    .result--spam {
+      --bubble-color: #e48a7f;
+      border: 1px solid #f5d3ca;
+      background: #fff0ed;
+      color: #9b3527;
+    }
+    .result--safe {
+      --bubble-color: #70b98d;
+      border: 1px solid #c5e8d1;
+      background: #effaf2;
+      color: #216b41;
+    }
+    .result-icon {
+      display: inline-grid;
+      width: 1.45em;
+      height: 1.45em;
+      margin-right: .4em;
+      place-items: center;
+      border-radius: 50%;
+      background: currentColor;
+      color: #fff;
+      font-size: .78em;
+      vertical-align: middle;
+    }
     .result::before, .result::after {
       position: absolute;
-      border: 2px solid #9db5ff;
+      border: 2px solid var(--bubble-color);
       border-radius: 50%;
       content: "";
       opacity: 0;
@@ -201,7 +222,11 @@
     </form>
 
     {% if error %}<div class="error" role="alert">{{ error }}</div>{% endif %}
-    {% if result %}<div class="result" role="status">Prediction: {{ result }}</div>{% endif %}
+    {% if result == "Spam" %}
+      <div class="result result--spam" role="alert"><span class="result-icon" aria-hidden="true">!</span>Spam detected. This message may be unsafe.</div>
+    {% elif result %}
+      <div class="result result--safe" role="status"><span class="result-icon" aria-hidden="true">✓</span>No spam detected. This message looks safe.</div>
+    {% endif %}
 
     <div class="stats">
       <span class="stats-mark" aria-hidden="true">✓</span>
