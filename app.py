@@ -29,5 +29,6 @@ def home():
 
 
 if __name__ == "__main__":
-    # Local development only. Do not expose Flask's debug server to the internet.
-    app.run(host="127.0.0.1", port=5000, debug=False)
+    # Listen on the local network so a phone on the same Wi-Fi can open the app.
+    # This is still a development server; do not expose it to the public internet.
+    app.run(host="0.0.0.0", port=5000, debug=False)

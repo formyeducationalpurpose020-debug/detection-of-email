@@ -14,6 +14,10 @@ python app.py
 
 The dataset download is several megabytes. Leave the terminal open, then visit **http://127.0.0.1:5000** in your browser. Paste a message into the page to get a prediction. Press **Ctrl+C** in the terminal to stop the app.
 
+### Open it on your phone
+
+Connect your phone to the same Wi-Fi as your computer. In PowerShell, run `ipconfig` and find the computer's **IPv4 Address** under the active Wi-Fi adapter (for example, `192.168.1.25`). On your phone, open `http://192.168.1.25:5000`, replacing the example address with your computer's IPv4 address. Keep `python app.py` running. If Windows Firewall asks, allow Python on your private network.
+
 If using VS Code, run these commands with the same Python interpreter selected in its bottom-right corner.
 
 ## How it works
